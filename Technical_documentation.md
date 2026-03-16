@@ -19,6 +19,9 @@ SHAP (SHapley Additive exPlanations) is a model interpretability framework that 
 ## II - Data
 The original kaggle dataset used can be found at the following link : [Human Ressources Dataset](https://www.kaggle.com/datasets/rhuebner/human-resources-data-set)
 ### 1) Preprocessing
+The notebooks begin by loading the HR dataset (HRDataset_v14.csv) using the pandas library and performing an initial exploration of the data structure. The exploration notebook inspects the dataset using methods such as head(), info(), describe(), and duplicate checks to understand the variables, their data types, and basic statistical properties. Visual exploration is also performed using matplotlib and seaborn, with count plots and value counts used to analyse the distribution of key demographic and employment variables such as gender, marital status, race, recruitment source, and employment status. This step helps identify patterns, potential imbalances, and variables that may be relevant for later modelling and fairness analysis.
+
+The preprocessing notebook then prepares the data for modelling by cleaning and restructuring the dataset. Columns that could introduce data leakage, such as termination-related variables (e.g., termination date or employment status), are removed because they reveal information about the target outcome. The dataset is also prepared for machine learning by transforming categorical variables into numerical representations, typically through one-hot encoding, allowing algorithms to process them effectively. These preprocessing steps ensure that the dataset is consistent, free from leakage, and suitable for training predictive models and conducting further fairness and explainability analyses.
 ### 2) Generated rows
 
 ## III - Models used
