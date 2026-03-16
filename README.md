@@ -16,7 +16,7 @@ The objective of this project is to create an AI model capable of predicting emp
 The project is led over the course of two days in a group of five engineering students. Four out five of the participants are Majoring in data and artiffical intelligence and one in Connected Objects and Cybersecurity.
 Our goal is to have a model that is both evaluated highly in terms of performance metrics such as accuracy and f1-score as well as in terms of bias indicators and other ai explainability tools. 
 We seek to follow the guidelines imposed by the AI ACT as well as respecting the [link text](https://github.com/Trusted-AI/AIF360)
-[link text](AIF 360 (Artiffical Intelligence Fairness 360)) norms. 
+[AIF 360 (Artiffical Intelligence Fairness 360)] norms. 
 
 The deliverables expected at the end of the two days are:
   - Clear Visualisations explaining data bias
