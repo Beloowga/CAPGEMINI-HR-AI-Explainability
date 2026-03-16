@@ -30,6 +30,9 @@ We first tried generating artifficial rows with the use of a LLM (Large Language
 #### a) Overview
 Random Forest is a machine-learning algorithm that builds many decision trees using random subsets of the data and features. Each tree produces a prediction, and the final result is obtained by combining them—typically through majority voting for classification or averaging for regression. This ensemble approach improves accuracy and reduces overfitting compared with a single decision tree.
 #### b) Advantages
+Random Forest offers several advantages for explainability compared with many other machine-learning models. First, it provides feature importance measures, which indicate how much each variable contributes to the model’s predictions. This helps identify which factors most strongly influence the outcome.
+
+Second, although the model is composed of many trees, each individual decision tree follows a sequence of clear rules based on feature splits. This structure allows analysts to inspect trees or analyse feature contributions to understand how predictions are formed. As a result, random forests provide a balance between strong predictive performance and a level of interpretability that supports model transparency and analysis.
 
 #### c) Limitations
 ### 2)XGBoost
