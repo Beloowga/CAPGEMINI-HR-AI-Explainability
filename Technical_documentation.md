@@ -25,9 +25,11 @@ The preprocessing notebook then prepares the data for modelling by cleaning and 
 ### 2) Generated rows
 
 ## III - Models used
-### 1)
+### 1)Random Forest
 #### a) Overview
+Random Forest is a machine-learning algorithm that builds many decision trees using random subsets of the data and features. Each tree produces a prediction, and the final result is obtained by combining them—typically through majority voting for classification or averaging for regression. This ensemble approach improves accuracy and reduces overfitting compared with a single decision tree.
 #### b) Advantages
+
 #### c) Limitations
-### 2)
+### 2)XGBoost
  
