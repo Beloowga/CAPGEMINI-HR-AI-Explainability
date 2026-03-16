@@ -36,8 +36,7 @@ The question of frugality and security fall out of the scope of this specific pr
 Our project is constructed for the HR department of a company that is struggling with a large number or resignations and / or that is struggling to understand the motivation behind employee resignations.
 
 ## Instructions
-To run the project be sure to have the required libraries that can be found in the [link text](https://github.com/CAPGEMINI-HR-AI-Explainability)
-[link text](requirements.txt) file.
+To run the project be sure to have the required libraries that can be found in the [requirements.txt](https://github.com/CAPGEMINI-HR-AI-Explainability) file.
 ...
 
 Timing: 16/03/2026 9:30 am - 17/03/2026 1:30 pm
