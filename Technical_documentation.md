@@ -177,3 +177,14 @@ The Random Forest model was selected because:
 - Stable performance
 - Lower overfitting
 - Good interpretability
+
+## V - Pipeline architecture
+
+1. Data loading (CSV)
+2. Data exploration
+3. Preprocessing (cleaning, encoding)
+4. Train/test split
+5. Model training
+6. Bias analysis (AIF360)
+7. Model evaluation
+8. Explainability (SHAP)
