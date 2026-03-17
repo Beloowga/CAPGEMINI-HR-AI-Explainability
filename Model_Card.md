@@ -7,6 +7,8 @@
 ### Cas d’usage visé
 Prédiction des employés susceptibles de démissionner et identification des facteurs corrélés aux départs pour aider à la prise de décision RH.
 
+Les relations identifiées sont **corrélationnelles et non causales**. Le modèle ne permet pas d’expliquer les causes réelles des départs.
+
 ### Entrées
 Tableau structuré de variables décrivant les employés :
 - Données démographiques  
@@ -55,6 +57,7 @@ Human Resources dataset – Dr Rich Huebner, Dr Carla Patalano
 - Déséquilibre des classes  
 - Variables sensibles présentes (non utilisées directement)  
 - Taille faible du dataset → risque de surapprentissage  
+- Dataset non européen → transférabilité limitée vers l’UE  
 
 ---
 
@@ -71,58 +74,53 @@ Human Resources dataset – Dr Rich Huebner, Dr Carla Patalano
 
 ---
 
-### Modèle baseline
+### Modèle baseline (Logistic Regression)
 
 #### Validation croisée (5-fold)
-- Accuracy : **0.637 ± 0.059**  
-- F1-score : **0.534 ± 0.071**
+- Accuracy : **0.657 ± 0.044**  
+- F1-score : **0.554 ± 0.049**
 
 #### Test set
-- Accuracy : **0.68**
+- Accuracy : **0.65**
 
 | Classe          | Precision | Recall | F1-score |
 |-----------------|----------|--------|----------|
-| Active (0)      | 0.81     | 0.69   | 0.74     |
-| Terminated (1)  | 0.52     | 0.67   | 0.58     |
+| Active (0)      | 0.79     | 0.64   | 0.71     |
+| Terminated (1)  | 0.48     | 0.67   | 0.56     |
 
 **Observation :**
 - Bon rappel sur les démissions  
-- Precision faible → faux positifs  
+- Precision faible → nombreux faux positifs  
 
 ---
 
 ### Modèle XGBoost (optimisé)
 
-#### Hyperparamètres
-max_depth=3
-
-learning_rate=0.1
-
-n_estimators=100
-
-gamma=0.3
-
-colsample_bytree=0.6
-
-subsample=1.0
-
+#### Hyperparamètres optimaux
+- subsample = 0.8  
+- n_estimators = 400  
+- min_child_weight = 3  
+- max_depth = 5  
+- learning_rate = 0.01  
+- gamma = 0  
+- colsample_bytree = 0.6  
 
 #### Validation
-- AUC CV : **0.657**
+- AUC CV : **0.651**
 
 #### Test set
-- Accuracy : **0.70**  
-- ROC-AUC : **0.684**
+- Accuracy : **0.68**  
+- ROC-AUC : **0.696**
 
 | Classe          | Precision | Recall | F1-score |
 |-----------------|----------|--------|----------|
-| Active (0)      | 0.77     | 0.79   | 0.78     |
-| Terminated (1)  | 0.55     | 0.52   | 0.54     |
+| Active (0)      | 0.75     | 0.79   | 0.77     |
+| Terminated (1)  | 0.53     | 0.48   | 0.50     |
 
 #### Overfitting
-- Train AUC : **0.996**  
-- Test AUC : **0.684**  
-- Gap : **0.312 → surapprentissage important**
+- Train AUC : **0.991**  
+- Test AUC : **0.696**  
+- Gap : **0.295 → surapprentissage important**
 
 ---
 
@@ -130,7 +128,7 @@ subsample=1.0
 
 #### Test set
 - Accuracy : **0.76**  
-- ROC-AUC : **0.782**
+- ROC-AUC : **0.778**
 
 | Classe          | Precision | Recall | F1-score |
 |-----------------|----------|--------|----------|
@@ -138,9 +136,9 @@ subsample=1.0
 | Terminated (1)  | 0.67     | 0.57   | 0.62     |
 
 #### Overfitting
-- Train AUC : **0.801**  
-- Test AUC : **0.782**  
-- Gap : **0.018 → très bon équilibre**
+- Train AUC : **0.882**  
+- Test AUC : **0.778**  
+- Gap : **0.105 → bon compromis biais/variance**
 
 ---
 
@@ -149,27 +147,32 @@ subsample=1.0
 - SHAP utilisé pour expliquer les prédictions individuelles  
 
 #### Exemple
-- Probabilité prédite : **0.460 → Active**  
+- Probabilité prédite : **0.459 → Active**  
 - Base value : **0.4977**
 
 #### Variables influentes
-- Sources de recrutement (Website, Referral, LinkedIn…)  
+- Sources de recrutement  
+- ManagerID  
+- Statut marital  
 - Retards récents (DaysLateLast30)  
 - Salaire  
 - Nombre de projets  
-- Statut marital  
 
 ---
 
 ### Analyse d’équité
 
 - Déséquilibres observés selon certains groupes  
-- Indices de biais potentiels (AIF360) :
-  - Différences de taux de prédiction  
-  - Impact de variables corrélées  
+- Indices de biais potentiels (AIF360)
+
+**Résultats principaux :**
+- Disparate Impact : **0.954 → 1.000 (après mitigation)**  
+- Statistical Parity Difference : **-0.032 → 0.000**  
+- Equal Opportunity Difference : **-0.034 → -0.145**  
+- Average Odds Difference : reste dans les seuils acceptables  
 
 **Observation :**  
-Le modèle présente des variations de performance selon certains groupes, nécessitant une vigilance avant déploiement.
+L’audit ne met pas en évidence de biais majeur selon l’âge, mais montre des compromis entre métriques de fairness. Une surveillance reste nécessaire.
 
 ---
 
@@ -197,8 +200,6 @@ Le modèle présente des variations de performance selon certains groupes, néce
   - Peu de validation externe  
   - Robustesse limitée  
 
-- Dataset non européen → transférabilité limitée vers l’UE  
-
 ---
 
 ## 5. Risques & mitigation
@@ -221,8 +222,8 @@ Le modèle présente des variations de performance selon certains groupes, néce
 Le modèle est considéré comme **à haut risque** selon l’AI Act (emploi).
 
 Exigences :
-- Supervision humaine  
-- Transparence  
+- Supervision humaine obligatoire  
+- Transparence des décisions  
 - Documentation des biais  
 - Audit régulier  
 
@@ -230,9 +231,9 @@ Exigences :
 
 ## 6. Énergie et frugalité
 
-- Poids du modèle : **340 kB**  
+- Poids du modèle : **690kB**  
 - Temps d’inférence : **78 μs (CPU)**  
-- Énergie estimée : **6,0 × 10⁻⁵ kWh/CO₂**
+- Énergie estimée (CodeCarbon) : **9,3 × 10⁻⁵ kWh/CO₂**
 
 ---
 
