@@ -8,7 +8,6 @@
 | **Auteurs** | Dr. Rich Huebner et Dr. Carla Patalano |
 | **Type** | Données synthétiques,  créées à des fins pédagogiques |
 | **Taille initiale** | 311 lignes × 36 colonnes |
-| **Après nettoyage** | 311 lignes × 22 variables + 1 variable cible |
 | **Variable cible** | `Termd` - 0 = employé actif, 1 = parti |
 | **Répartition des classes** | 207 employés actifs (67%) / 104 partis (33%) |
 
