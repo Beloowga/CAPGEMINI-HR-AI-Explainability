@@ -34,7 +34,7 @@ The question of frugality and security fall out of the scope of this specific pr
 
 ## Project Persona
 
-Our project is constructed for the HR department of a company that is struggling with a large number or resignations and / or that is struggling to understand the motivation behind employee resignations.
+Our project is constructed for the HR department of a company with a minimum of 1000 employees exercing in the European Union that is struggling with a large number or resignations and / or that is struggling to understand the motivation behind employee resignations.
 
 ## Instructions
 To run the project be sure to have the required libraries that can be found in the [requirements.txt](https://github.com/Beloowga/CAPGEMINI-HR-AI-Explainability/blob/main/requirements.txt) file.
