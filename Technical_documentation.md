@@ -27,11 +27,30 @@ We measure bias using four standard fairness metrics:
 We applied Reweighing, a pre-processing technique that assigns corrected weights to training examples to compensate for group imbalance. It does not modify any data values, it only adjusts how much the model pays attention to each example during training. The model was then retrained using these corrected weights.
 
 #### e) Results
-The audit showed no significant age bias in the model. DI improved from 0.954 to 1.000 and SPD from -0.032 to 0.000 after Reweighing. EOD slightly degraded (-0.034 to -0.145) : it is difficult to optimise all fairness metrics simultaneously. AOD remained within the fair threshold throughout.
+The fairness audit did not reveal strong evidence of age bias according to most of the selected AIF360 metrics. Reweighing improved some parity indicators, although Equal Opportunity Difference slightly degraded, illustrating the trade-offs between fairness criteria. DI improved from 0.954 to 1.000 and SPD from -0.032 to 0.000 after Reweighing. EOD slightly degraded (-0.034 to -0.145) : it is difficult to optimise all fairness metrics simultaneously. AOD remained within the fair threshold throughout.
     
 ### 3) SHAP 
 #### a) What is SHAP ?
 SHAP (SHapley Additive exPlanations) is a model interpretability framework that explains the predictions of machine-learning models by assigning each feature an importance value for a particular prediction. Based on concepts from Game Theory—specifically the Shapley Value—SHAP quantifies how much each input feature contributes to the difference between the model’s prediction and the average prediction. It works with many types of models and provides both global explanations (overall feature importance) and local explanations (feature contributions for individual predictions), helping practitioners better understand, trust, and debug complex models.
+
+#### b) SHAP results in our project
+
+SHAP was applied to the Random Forest model to provide local explanations for individual predictions.
+
+For one analysed employee:
+- Base value: **0.4977**
+- Predicted probability: **0.459**
+- Predicted class: **Active**
+
+The most influential features observed in the notebook include:
+- Recruitment source
+- ManagerID
+- MarriedID
+- DaysLateLast30
+- Salary
+- SpecialProjectsCount
+
+These explanations help identify which factors contributed most to a given prediction, improving transparency for HR users.
 
 ### 4) AI Act risk classification
 
@@ -123,60 +142,170 @@ Tree-based models were selected because:
   
 ### 4) Hyperparameter tuning
 
-Hyperparameters were optimised using grid search / manual tuning.
+Hyperparameters were optimised using RandomizedSearchCV for XGBoost.
 
 Key parameters tuned:
 - max_depth
 - learning_rate
 - n_estimators
+- min_child_weight
 - subsample
 - colsample_bytree
+- gamma
 
-The goal was to balance performance and overfitting.
+Best parameters found:
+- subsample = 0.8
+- n_estimators = 400
+- min_child_weight = 3
+- max_depth = 5
+- learning_rate = 0.01
+- gamma = 0
+- colsample_bytree = 0.6
+
+Best cross-validated ROC-AUC for XGBoost: **0.651**
+
+The goal was to balance predictive performance and overfitting.
 
 ### 5) Overfitting analysis
 
-A significant gap between training and test performance was observed in XGBoost:
-- Train AUC: 0.996
-- Test AUC: 0.684
+A significant gap between training and test performance was observed for XGBoost:
+- Train AUC: **0.991**
+- Test AUC: **0.696**
+- Gap: **0.295**
 
-This indicates strong overfitting.
+This indicates substantial overfitting despite hyperparameter tuning.
 
-The final model (Random Forest) was selected due to:
-- Smaller performance gap
-- Better generalisation
+A smaller but still noticeable gap was observed for Random Forest:
+- Train AUC: **0.882**
+- Test AUC: **0.778**
+- Gap: **0.105**
+
+This suggests moderate overfitting, but with better generalisation than XGBoost.
+
+The final model (Random Forest) was selected because it achieved:
+- the best overall test performance,
+- better class balance on the minority class,
+- and a more acceptable generalisation trade-off.
 
  ## IV - Evaluation
 
 ### 1) Performance metrics rationale
 
-- Accuracy: overall correctness
-- Precision: reliability of positive predictions
-- Recall: ability to detect employees who leave
-- F1-score: balance between precision and recall
-- ROC-AUC: overall discrimination ability
+The following metrics were used to evaluate the models:
 
-Recall is particularly important in this use case to detect potential resignations.
+- **Accuracy**: overall proportion of correct predictions
+- **Precision**: reliability of positive predictions
+- **Recall**: ability to identify employees who actually leave
+- **F1-score**: harmonic mean of precision and recall
+- **ROC-AUC**: overall ability to distinguish between leavers and non-leavers
 
----
-
-### 2) Model comparison
-
-| Model         | Accuracy | ROC-AUC | Notes |
-|--------------|----------|--------|------|
-| Baseline     | 0.68     | -      | Weak performance |
-| XGBoost      | 0.70     | 0.684  | Overfitting |
-| Random Forest| 0.76     | 0.782  | Best trade-off |
+In this use case, **Recall** is particularly important because failing to identify employees at risk of leaving may reduce the practical usefulness of the model. However, Recall must be balanced with Precision to avoid too many false alerts.
 
 ---
 
-### 3) Final model selection
+### 2) Baseline model results
 
-The Random Forest model was selected because:
-- Best generalisation
-- Stable performance
-- Lower overfitting
-- Good interpretability
+The baseline model is a **Logistic Regression pipeline**.
+
+#### Cross-validation (5-fold)
+- Accuracy: **0.657 ± 0.044**
+- F1-score: **0.554 ± 0.049**
+
+#### Test set results
+
+| Class | Precision | Recall | F1-score | Support |
+|------|----------:|-------:|---------:|--------:|
+| Active (0) | 0.79 | 0.64 | 0.71 | 42 |
+| Terminated (1) | 0.48 | 0.67 | 0.56 | 21 |
+
+- **Accuracy:** 0.65
+
+The baseline model shows relatively good Recall on the “Terminated” class, but weak Precision, meaning that many employees predicted as likely to leave would in fact remain.
+
+---
+
+### 3) XGBoost results
+
+XGBoost was tuned using RandomizedSearchCV.
+
+#### Best hyperparameters
+- subsample = 0.8
+- n_estimators = 400
+- min_child_weight = 3
+- max_depth = 5
+- learning_rate = 0.01
+- gamma = 0
+- colsample_bytree = 0.6
+
+#### Validation
+- Best CV ROC-AUC: **0.651**
+
+#### Test set results
+
+| Class | Precision | Recall | F1-score | Support |
+|------|----------:|-------:|---------:|--------:|
+| Active (0) | 0.75 | 0.79 | 0.77 | 42 |
+| Terminated (1) | 0.53 | 0.48 | 0.50 | 21 |
+
+- **Accuracy:** 0.68
+- **ROC-AUC:** 0.696
+
+#### Overfitting check
+- Train AUC: **0.991**
+- Test AUC: **0.696**
+- Gap: **0.295**
+
+Although XGBoost improved overall discrimination compared with the baseline, it showed a strong overfitting effect and weaker Recall on the minority class than the baseline.
+
+---
+
+### 4) Random Forest results
+
+The Random Forest model achieved the best overall balance between predictive performance and generalisation.
+
+#### Test set results
+
+| Class | Precision | Recall | F1-score | Support |
+|------|----------:|-------:|---------:|--------:|
+| Active (0) | 0.80 | 0.86 | 0.83 | 42 |
+| Terminated (1) | 0.67 | 0.57 | 0.62 | 21 |
+
+- **Accuracy:** 0.76
+- **ROC-AUC:** 0.778
+
+#### Overfitting check
+- Train AUC: **0.882**
+- Test AUC: **0.778**
+- Gap: **0.105**
+
+Compared with the other models, Random Forest delivered:
+- the highest test accuracy,
+- the highest ROC-AUC,
+- the best Precision on the “Terminated” class,
+- and a more controlled overfitting profile than XGBoost.
+
+---
+
+### 5) Model comparison
+
+| Model | Accuracy | ROC-AUC | Terminated Precision | Terminated Recall | Terminated F1 | Notes |
+|------|---------:|--------:|---------------------:|------------------:|--------------:|------|
+| Baseline (Logistic Regression) | 0.65 | - | 0.48 | 0.67 | 0.56 | Better Recall, weaker Precision |
+| XGBoost | 0.68 | 0.696 | 0.53 | 0.48 | 0.50 | Strong overfitting |
+| Random Forest | 0.76 | 0.778 | 0.67 | 0.57 | 0.62 | Best trade-off |
+
+---
+
+### 6) Final model selection
+
+The **Random Forest** model was selected as the final model because it provided the best overall compromise between:
+
+- predictive performance,
+- generalisation ability,
+- interpretability,
+- and robustness on the minority class.
+
+Although the baseline logistic regression achieved slightly better Recall on employees who leave, Random Forest produced a better overall balance and fewer false positives, which makes it more suitable for HR decision support.
 
 ## V - Pipeline architecture
 
@@ -188,3 +317,10 @@ The Random Forest model was selected because:
 6. Bias analysis (AIF360)
 7. Model evaluation
 8. Explainability (SHAP)
+
+## VI - Deployment considerations
+
+- Model can be deployed as an API for HR tools
+- Predictions should always be reviewed by HR professionals
+- Regular retraining is required to avoid data drift
+- Monitoring of fairness metrics is necessary in production
