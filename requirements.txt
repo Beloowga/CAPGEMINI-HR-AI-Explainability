@@ -1,1 +1,9 @@
-To be completed
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+xgboost
+shap
+aif360
+jupyter
