@@ -11,6 +11,23 @@
 ### 2) AIF 360 tools
 #### a) What is AIF 360 ?
 AI Fairness 360 (AIF360) is an open-source toolkit developed by IBM to help detect, understand, and mitigate bias in machine-learning models. It provides a comprehensive set of fairness metrics that measure potential discrimination in datasets and model predictions, as well as algorithms designed to reduce bias during different stages of the machine-learning pipeline (pre-processing, in-processing, and post-processing). AIF360 also includes example datasets, tutorials, and visualisation tools, enabling data scientists to evaluate fairness and build more transparent and responsible AI systems. In the scope of this project we use the tools provided to evaluate the bias and ethics of our models as well as the libraries allowing us to corrects these biases.
+
+#### b) Legal context
+Under GDPR Article 9 and the EU AI Act, processing categories of personal data (including gender, racial or ethnic origin) for automated decision-making in employment contexts is prohibited. These attributes were removed from the model and excluded from the bias audit. The only sensitive attribute audited is Age, as employees aged 45 and over show a consistently higher turnover rate in our dataset, making it a meaningful and legally permitted variable for bias detection.
+
+#### c) Metrics used
+We measure bias using four standard fairness metrics:
+
+- **Disparate Impact (DI):** ratio of termination rates between the two age groups. Fair if ≥ 0.8.
+- **Statistical Parity Difference (SPD):** absolute gap in termination rates between groups. Fair if |x| < 0.1.
+- **Equal Opportunity Difference (EOD):** measures whether the model is equally good at identifying actual leavers across both groups. Fair if |x| < 0.1.
+- **Average Odds Difference (AOD):** combines true positive and false positive rate parity across groups. Fair if |x| < 0.1.
+
+#### d) Mitigation: Reweighing
+We applied Reweighing, a pre-processing technique that assigns corrected weights to training examples to compensate for group imbalance. It does not modify any data values, it only adjusts how much the model pays attention to each example during training. The model was then retrained using these corrected weights.
+
+#### e) Results
+The audit showed no significant age bias in the model. DI improved from 0.954 to 1.000 and SPD from -0.032 to 0.000 after Reweighing. EOD slightly degraded (-0.034 to -0.145) : it is difficult to optimise all fairness metrics simultaneously. AOD remained within the fair threshold throughout.
     
 ### 3) SHAP 
 #### a) What is SHAP ?
