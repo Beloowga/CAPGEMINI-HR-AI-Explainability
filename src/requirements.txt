@@ -7,3 +7,4 @@ xgboost
 shap
 aif360
 jupyter
+streamlit
