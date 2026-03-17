@@ -145,4 +145,35 @@ This indicates strong overfitting.
 The final model (Random Forest) was selected due to:
 - Smaller performance gap
 - Better generalisation
- 
+
+ ## IV - Evaluation
+
+### 1) Performance metrics rationale
+
+- Accuracy: overall correctness
+- Precision: reliability of positive predictions
+- Recall: ability to detect employees who leave
+- F1-score: balance between precision and recall
+- ROC-AUC: overall discrimination ability
+
+Recall is particularly important in this use case to detect potential resignations.
+
+---
+
+### 2) Model comparison
+
+| Model         | Accuracy | ROC-AUC | Notes |
+|--------------|----------|--------|------|
+| Baseline     | 0.68     | -      | Weak performance |
+| XGBoost      | 0.70     | 0.684  | Overfitting |
+| Random Forest| 0.76     | 0.782  | Best trade-off |
+
+---
+
+### 3) Final model selection
+
+The Random Forest model was selected because:
+- Best generalisation
+- Stable performance
+- Lower overfitting
+- Good interpretability
