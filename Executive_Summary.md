@@ -36,17 +36,17 @@ Nous auditons le modèle pour détecter tout biais discriminatoire :
 | Métrique | Valeur |
 |---|---|
 | Modèle retenu | Random Forest |
-| Accuracy | 73% |
-| ROC-AUC | 0.785 |
+| Précision | 76% |
+| ROC-AUC | 78% |
 | Biais d'âge détecté (avant mitigation) | DI = 0.954 — faible |
 | Biais d'âge après Reweighing | DI = 1.000 — corrigé |
 
 **Top 5 des facteurs de turnover** (d'après SHAP) :
-1. Score d'engagement (EngagementSurvey)
+1. Manager
 2. Salaire
-3. Absences
-4. Satisfaction au travail
-5. Retards récents
+3. Age
+4. Absences
+5. Poste
 
 ---
 
