@@ -63,9 +63,6 @@ manager = st.selectbox("Manager", managers)
 recruitment_sources = df_original["RecruitmentSource"].dropna().unique()
 recruitment = st.selectbox("Recruitment Source", recruitment_sources)
 
-citizenship = df_original["CitizenDesc"].dropna().unique()
-citizen = st.selectbox("Citizenship", citizenship)
-
 married = st.selectbox("Married", ["Yes", "No"])
 married_id = 1 if married == "Yes" else 0
 
@@ -74,28 +71,17 @@ married_id = 1 if married == "Yes" else 0
 # ------------------------------------------------
 
 dept_id = df_original[df_original["Department"] == department]["DeptID"].iloc[0]
-
 position_id = df_original[df_original["Position"] == position]["PositionID"].iloc[0]
-
 manager_id = df_original[df_original["ManagerName"] == manager]["ManagerID"].iloc[0]
-
-# ------------------------------------------------
-# Citizen encoding
-# ------------------------------------------------
-
-citizen_us = 1 if citizen == "US Citizen" else 0
-citizen_non = 1 if citizen != "US Citizen" else 0
 
 # ------------------------------------------------
 # Recruitment source one-hot
 # ------------------------------------------------
 
 recruitment_cols = [c for c in df_cleaned.columns if "RecruitmentSource_" in c]
-
 recruitment_data = {col: 0 for col in recruitment_cols}
 
 selected_col = f"RecruitmentSource_{recruitment}"
-
 if selected_col in recruitment_data:
     recruitment_data[selected_col] = 1
 
@@ -117,13 +103,10 @@ data = {
     "SpecialProjectsCount":[projects],
     "DaysLateLast30":[late],
     "Absences":[absences],
-    "Age":[age],
-    "CitizenDesc_Non-Citizen":[citizen_non],
-    "CitizenDesc_US Citizen":[citizen_us]
+    "Age":[age]
 }
 
 data.update(recruitment_data)
-
 df_input = pd.DataFrame(data)
 
 # Ensure column order exactly matches training
@@ -168,7 +151,5 @@ if st.button("Predict"):
     )
 
     fig, ax = plt.subplots()
-
     shap.plots.waterfall(explanation, show=False)
-
     st.pyplot(fig)
