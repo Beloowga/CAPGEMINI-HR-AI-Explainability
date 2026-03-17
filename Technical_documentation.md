@@ -23,7 +23,6 @@ The notebooks begin by loading the HR dataset (HRDataset_v14.csv) using the pand
 
 The preprocessing notebook then prepares the data for modelling by cleaning and restructuring the dataset. Columns that could introduce data leakage, such as termination-related variables (e.g., termination date or employment status), are removed because they reveal information about the target outcome. The dataset is also prepared for machine learning by transforming categorical variables into numerical representations, typically through one-hot encoding, allowing algorithms to process them effectively. These preprocessing steps ensure that the dataset is consistent, free from leakage, and suitable for training predictive models and conducting further fairness and explainability analyses.
 ### 2) Generated rows
-We first tried generating artifficial rows with the use of a LLM (Large Language Model) however the results were underwhelming and the quantity needed was likely to negatively impact the authenticity of the data. The original dataset only has 311 rows for 36 columns(pre-cleaning). Therfor we decided to extract data from another dataset and format so that it could overlap the original dataset. The dataset use for this step is the following: [Employee Attrition Uncleaned Dataset](https://www.kaggle.com/datasets/nikhilbhosle/employee-attrition-uncleaned-dataset) . So as not to loose time we preceeded to check the data and ask an llm to match up the second dataset to the first. We checked the accuracy of this method and confirmed that there were no errors during this step.
 
 ## III - Models used
 ### 1)Random Forest
@@ -35,5 +34,25 @@ Random Forest offers several advantages for explainability compared with many ot
 Second, although the model is composed of many trees, each individual decision tree follows a sequence of clear rules based on feature splits. This structure allows analysts to inspect trees or analyse feature contributions to understand how predictions are formed. As a result, random forests provide a balance between strong predictive performance and a level of interpretability that supports model transparency and analysis.
 
 #### c) Limitations
+Random Forest also has several limitations in terms of explainability. Although it is more interpretable than some models, the combination of many trees makes the overall model difficult to interpret globally, as there is no single clear decision path.
+
+Additionally, its feature importance measures can be biased, particularly when features are correlated or have different scales, which may lead to misleading conclusions. While individual trees can be inspected, they are often too numerous and complex to analyse effectively. As a result, external tools such as SHAP are often needed to gain deeper and more reliable insights.
+
+#### d)Results
+
 ### 2)XGBoost
+#### a) Overview
+XGBoost is a machine-learning algorithm that builds decision trees sequentially, where each new tree focuses on correcting the errors of the previous ones. By optimising a loss function and adding regularisation, it improves accuracy while controlling overfitting, making it highly effective for structured data.
+
+#### b) Advantages
+XGBoost offers several advantages for explainability despite being a powerful ensemble model. It provides built-in feature importance scores, helping identify which variables most influence predictions. In addition, its tree-based structure allows for detailed analysis of how features are used across splits, giving insight into decision patterns.
+
+Moreover, XGBoost works particularly well with interpretability tools such as SHAP, which can break down predictions into individual feature contributions. This makes it possible to obtain both global explanations (overall model behaviour) and local explanations (why a specific prediction was made), improving transparency and trust in the model.
+
+#### c) Limitations
+XGBoost has several limitations when it comes to explainability. First, as an ensemble of many sequential trees, it is inherently complex and less interpretable than simpler models like a single decision tree, making it difficult to directly understand how predictions are formed.
+
+Second, its feature importance measures can sometimes be misleading or biased, especially when features are correlated, as importance may be distributed unevenly. While tools like SHAP help improve interpretability, they add an extra layer of complexity and can be computationally expensive. Overall, understanding XGBoost often requires additional methods and expertise, which can limit its transparency in practice.
+#### d) Results
+
  
