@@ -1,22 +1,20 @@
 ```mermaid
 graph TD
     subgraph Data_Layer [Couche de Données]
-        A[Données Brutes — Kaggle HR 311 lignes]
+        A[Données Brutes - Kaggle HR 311 lignes]
     end
-
     subgraph Preprocessing [Prétraitement]
         B[Suppression Identifiants RGPD]
         C[Suppression Attributs Sensibles]
-        D[Élimination Fuites de Données]
+        D[Elimination Fuites de Données]
         E[Feature Engineering]
         A --> B --> C --> D --> E
     end
-
     subgraph Modeling [Modélisation]
-        I[Régression Logistique — Baseline]
+        I[Régression Logistique - Baseline]
         K[XGBoost]
-        L[Random Forest — Modèle Final]
-        M[Évaluation — Accuracy, F1, Recall, ROC-AUC]
+        L[Random Forest - Modele Final]
+        M[Evaluation - Accuracy, F1, Recall, ROC-AUC]
         E --> I
         E --> K
         E --> L
@@ -24,21 +22,18 @@ graph TD
         K --> M
         L --> M
     end
-
     subgraph Explainability [Explicabilité SHAP]
         N[Importance Globale des Variables]
         O[Explications Locales Individuelles]
         M --> N
         M --> O
     end
-
-    subgraph Fairness_Ethics [Éthique et Équité]
+    subgraph Fairness_Ethics [Ethique et Equité]
         F[Audit de Biais AIF360]
-        G[Mitigation — Reweighing]
-        H[Métriques — DI, SPD, EOD, AOD]
+        G[Mitigation Reweighing]
+        H[Métriques DI, SPD, EOD, AOD]
         M --> F --> G --> H
     end
-
     subgraph Output [Sortie]
         Q[Prédiction Binaire 0 / 1]
         R[Score de Probabilité]
