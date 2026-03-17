@@ -1,18 +1,18 @@
 # Architecture du projet
 ```mermaid
 graph TD
-    subgraph Data_Layer [Couche de Données]
-        A[Données Brutes - Kaggle HR 311 lignes]
+    subgraph Data_Layer [Couche de Donnees]
+        A[Donnees Brutes - Kaggle HR 311 lignes]
     end
-    subgraph Preprocessing [Prétraitement]
+    subgraph Preprocessing [Pretraitement]
         B[Suppression Identifiants RGPD]
         C[Suppression Attributs Sensibles]
-        D[Elimination Fuites de Données]
+        D[Elimination Fuites de Donnees]
         E[Feature Engineering]
         A --> B --> C --> D --> E
     end
-    subgraph Modeling [Modélisation]
-        I[Régression Logistique - Baseline]
+    subgraph Modeling [Modelisation]
+        I[Regression Logistique - Baseline]
         K[XGBoost]
         L[Random Forest - Modele Final]
         M[Evaluation - Accuracy, F1, Recall, ROC-AUC]
@@ -23,21 +23,21 @@ graph TD
         K --> M
         L --> M
     end
-    subgraph Explainability [Explicabilité SHAP]
+    subgraph Explainability [Explicabilite SHAP]
         N[Importance Globale des Variables]
         O[Explications Locales Individuelles]
         M --> N
         M --> O
     end
-    subgraph Fairness_Ethics [Ethique et Equité]
+    subgraph Fairness_Ethics [Ethique et Equite]
         F[Audit de Biais AIF360]
         G[Mitigation Reweighing]
-        H[Métriques DI, SPD, EOD, AOD]
+        H[Metriques DI, SPD, EOD, AOD]
         M --> F --> G --> H
     end
     subgraph Output [Sortie]
-        Q[Prédiction Binaire 0 / 1]
-        R[Score de Probabilité]
+        Q[Prediction Binaire]
+        R[Score de Probabilite]
         S[Rapport RH]
         H --> Q
         H --> R
