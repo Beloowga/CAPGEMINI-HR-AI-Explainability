@@ -31,6 +31,8 @@ Our project is constructed for the HR department of small to medium sized compan
 
 ## Instructions
 To run the project be sure to have the required libraries that can be found in the [requirements.txt](https://github.com/Beloowga/CAPGEMINI-HR-AI-Explainability/blob/main/src/requirements.txt) file.
-...
+Make sure to download every file in the src folder.
+Once the folder downloaded you can run the app.py file which will open the application enabling you to select the caracteristics of the employee and detrmine if they are at risk of quitting. 
+Following this you can use the tool as much as you wish and will be able to determine lead correlating factors for the individuals experience.
 
 Timing: 16/03/2026 9:30 am - 17/03/2026 1:30 pm
